@@ -1,43 +1,40 @@
 package edu.kit.informatik.model.characters.runa;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import edu.kit.informatik.model.abilities.Ability;
-import edu.kit.informatik.model.abilities.AbilityType;
 import edu.kit.informatik.model.characters.Character;
 
 public class Runa extends Character {
+
     private static final int MAX_HP = 50;
-    private static final int INITIAL_DICE = 4;
     private static final int INITIAL_FP = 1;
 
-    private final Role role;
+    private final Type type;
     private final List<Ability> abilities;
+    private int dice;
 
-    public Runa(Role role) {
+    public Runa(Type type) {
         super.setHp(MAX_HP);
         super.setFp(INITIAL_FP);
-        this.role = role;
-        this.abilities = new ArrayList<>();
-        this.abilities.addAll(role.getAbilities());
+        this.type = type;
+        this.abilities = type.typePowers(1);
+        this.dice = 4;
     }
 
-    @Override
-    public void attack(int damage, AbilityType type) {
-        super.setDamage(Optional.of(damage)); 
-        super.setType(Optional.of(type));      
+    public int getMaxHp() {
+        return MAX_HP;
     }
 
-    @Override
-    public void defend(int defence, AbilityType type) {
-        super.setDefence(Optional.of(defence));
-        super.setType(Optional.of(type));  
+    public Type getType() {
+        return this.type;
     }
 
-    @Override
-    public void focus(int level) {
-        // TODO Auto-generated method stub        
+    public List<Ability> getAbilities() {
+        return this.abilities;
     }
+
+    public int getDice() {
+        return this.dice;
+    }
+    
 }

@@ -1,19 +1,21 @@
 package edu.kit.informatik.model.abilities.runaabilities;
 
 import edu.kit.informatik.model.abilities.Ability;
-import edu.kit.informatik.model.abilities.AbilityType;
 import edu.kit.informatik.model.characters.Character;
 
 public class Reflect extends Ability {
 
+    private static final String name = "Reflect";
+
     public Reflect(int level) {
         super(level);
+        super.name = name;
     }
 
     @Override
-    public void effect(Character user) {
-        user.defend(10 * super.getLevel(), AbilityType.MAGICAL);
-        user.attack(user.getDefence().get(), AbilityType.PHYSICAL);
+    public void execute(Character attacker, Character defender) {
+        // TODO Auto-generated method stub
+        
     }
     
 }

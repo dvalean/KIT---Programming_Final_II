@@ -3,6 +3,7 @@ package edu.kit.informatik;
 import edu.kit.informatik.ui.Session;
 
 public final class Application {
+
     private Application() {
 
     }
@@ -11,4 +12,5 @@ public final class Application {
         Session session = new Session();
         session.start();
     }
+    
 }

@@ -3,55 +3,49 @@ package edu.kit.informatik.model.abilities;
 import edu.kit.informatik.model.characters.Character;
 
 public abstract class Ability {
+    private static final String REGEX = "%s(%d)";
+
     private final int level;
-    private int cost;
-    private boolean cancelsFocus;
-    private boolean requiresDiceRoll;
-    private boolean requiresFocusPts;
+
+    protected String name;
+    protected Action action;
+    protected Type type;
 
     public Ability(int level) {
         this.level = level;
-        this.cost = 0;
-        this.cancelsFocus = false;
-        this.requiresDiceRoll = false;
-        this.requiresFocusPts = false;
     }
 
     public int getLevel() {
         return this.level;
     }
 
-    public int getCost() {
-        return this.cost;
+    public Action getAction() {
+        return this.action;
     }
 
-    public void setCost(int cost) {
-        this.cost = cost;
+    public Type getType() {
+        return this.type;
     }
 
-    public boolean cancelsFocus() {
-        return this.cancelsFocus;
+    public abstract void execute(Character attacker, Character defender);
+
+    @Override
+    public String toString() {
+        return String.format(REGEX, this.name, this.level);
     }
 
-    public void setCancelsFocus(boolean cancelsFocus) {
-        this.cancelsFocus = cancelsFocus;
-    }
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
 
-    public boolean requiresDiceRoll() {
-        return this.requiresDiceRoll;
-    }
+        Ability a = (Ability) o;
+        if (this.name.equals(a.name)) {
+            return true;
+        }
 
-    public void setRequiresDiceRoll(boolean requiresDiceRoll) {
-        this.requiresDiceRoll = requiresDiceRoll;
+        return false;
     }
-
-    public boolean requiresFocusPts() {
-        return this.requiresFocusPts;
-    }
-
-    public void setRequiresFocusPts(boolean requiresFocusPts) {
-        this.requiresFocusPts = requiresFocusPts;
-    }
-
-    public abstract void effect(Character user);
+    
 }

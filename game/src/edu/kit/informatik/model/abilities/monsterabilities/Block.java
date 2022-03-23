@@ -1,13 +1,13 @@
-package edu.kit.informatik.model.abilities.runaabilities;
+package edu.kit.informatik.model.abilities.monsterabilities;
 
 import edu.kit.informatik.model.abilities.Ability;
 import edu.kit.informatik.model.characters.Character;
 
-public class Slash extends Ability {
+public class Block extends Ability {
 
-    private static final String name = "Slash";
+    private static final String name = "Block";
 
-    public Slash(int level) {
+    public Block(int level) {
         super(level);
         super.name = name;
     }

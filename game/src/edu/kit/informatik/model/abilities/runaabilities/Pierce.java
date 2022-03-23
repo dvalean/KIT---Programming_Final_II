@@ -1,21 +1,21 @@
 package edu.kit.informatik.model.abilities.runaabilities;
 
 import edu.kit.informatik.model.abilities.Ability;
-import edu.kit.informatik.model.abilities.AbilityType;
 import edu.kit.informatik.model.characters.Character;
 
 public class Pierce extends Ability {
+
+    private static final String name = "Pierce";
+
     public Pierce(int level) {
         super(level);
-        super.setRequiresDiceRoll(true);
+        super.name = name;
     }
 
     @Override
-    public void effect(Character user) {
-        if (user.getRoll() < 6) {
-            user.attack(7 * super.getLevel() + user.getRoll(), AbilityType.PHYSICAL);
-        } else {
-            user.attack(7 * super.getLevel() + user.getRoll() + 5 * super.getLevel(), AbilityType.PHYSICAL);
-        }
+    public void execute(Character attacker, Character defender) {
+        // TODO Auto-generated method stub
+        
     }
+    
 }

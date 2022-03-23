@@ -1,18 +1,12 @@
 package edu.kit.informatik.model.characters;
 
-import java.util.Optional;
-
-import edu.kit.informatik.model.abilities.AbilityType;
-
 public abstract class Character {
+
     private int hp;
     private int fp;
-
-    private int roll;
-
-    private Optional<Integer> damage;
-    private Optional<Integer> defence;
-    private Optional<AbilityType> type;
+    private int dmgDealt = 0;
+    private int dmgBlocked = 0;
+    private int roll = 0;
 
     public Character() {
 
@@ -34,39 +28,28 @@ public abstract class Character {
         return this.fp;
     }
 
-    public void setRoll(int roll) {
-        this.roll = roll;
+    public void loseHp(int dmg) {
+        this.hp -= dmg;
+    }
+
+    public void setDmgDealt(int dmgDealt) {
+        this.dmgDealt = dmgDealt;
+    }
+
+    public int getDmgDealt() {
+        return this.dmgDealt;
+    }
+
+    public void setDmgBlocked(int dmgBlocked) {
+        this.dmgBlocked = dmgBlocked;
+    }
+
+    public int getDmgBlocked() {
+        return dmgBlocked;
     }
 
     public int getRoll() {
-        return roll;
+        return this.roll;
     }
-
-    public void setDamage(Optional<Integer> damage) {
-        this.damage = damage;
-    }
-
-    public Optional<Integer> getDamage() {
-        return damage;
-    }
-
-    public void setDefence(Optional<Integer> defence) {
-        this.defence = defence;
-    }
-
-    public Optional<Integer> getDefence() {
-        return defence;
-    }
-
-    public void setType(Optional<AbilityType> type) {
-        this.type = type;
-    }
-
-    public Optional<AbilityType> getType() {
-        return this.type;
-    }
-
-    public abstract void attack(int damage, AbilityType type);
-    public abstract void defend(int defence, AbilityType type);
-    public abstract void focus(int level);
+    
 }
