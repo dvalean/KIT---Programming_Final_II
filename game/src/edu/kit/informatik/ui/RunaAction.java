@@ -3,9 +3,11 @@ package edu.kit.informatik.ui;
 import java.util.List;
 
 import edu.kit.informatik.model.Game;
+import edu.kit.informatik.model.abilities.AbilityAction;
+import edu.kit.informatik.model.abilities.AbilityType;
 import edu.kit.informatik.util.Messages;
 
-public class CreateRoom implements GameStates {
+public class RunaAction implements GameStates {
 
     private static final int ARGUMENTS_NUMBER = 0;
     private static final int LIMIT = 0;
@@ -13,7 +15,7 @@ public class CreateRoom implements GameStates {
     private final Session session;
     private final Game game;
 
-    public CreateRoom(Session session, Game game) {
+    public RunaAction(Session session, Game game) {
         this.session = session;
         this.game = game;
     }
@@ -35,19 +37,23 @@ public class CreateRoom implements GameStates {
 
     @Override
     public void message() {
-        System.out.println(String.format(Messages.ENTER_ROOM.toString(), this.game.getRoom(),
-                this.game.getLevel()));
+        System.out.println(String.format(Messages.CHARACTER_USES.toString(), this.game.getRuna().getName(),
+                this.game.getRuna().getIntent()));
     }
 
     @Override
     public void inputMessage() {
-
+        return;
     }
 
     @Override
     public void execute(List<Integer> arguments) {
-        this.game.initRoom();
-        this.session.setActualState(this.session.getActualState() + 1);
+        if (this.game.getRuna().getIntent().getAction() == AbilityAction.ATTACK
+                && this.game.getRuna().getIntent().getType() == AbilityType.PHYSICAL) {
+            this.session.setActualState(this.session.getActualState() + 1);
+        } else {
+            this.session.setActualState(this.session.getActualState() + 2);
+        }
     }
 
 }

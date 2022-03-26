@@ -14,56 +14,69 @@ public class Session {
     private static final String SEPARATOR = ",";
 
     private final Scanner scanner;
-    private final List<GameStates> gameStates;
-    private int currState;
+    private boolean validInput;
     private boolean running;
+
     private final Game game;
 
-    private boolean success;
+    private final List<GameStates> states;
+    private int actualState;
 
     public Session() {
         this.scanner = new Scanner(System.in);
-        this.gameStates = new ArrayList<>();
-        this.currState = 0;
         this.game = new Game();
 
-        this.gameStates.add(new CreateCharacter(this));
-        this.gameStates.add(new CreateLevel(this));
-        this.gameStates.add(new CreateRoom(this));
-        this.gameStates.add(new Fight(this));
+        this.states = new ArrayList<>();
+        initStates();
+        this.actualState = 0;
     }
 
-    public void setCurrState(int currState) {
-        this.currState = currState;
+    public void setActualState(int actualState) {
+        this.actualState = actualState;
     }
 
-    public int getCurrState() {
-        return this.currState;
+    public int getActualState() {
+        return this.actualState;
     }
 
-    public Game getGame() {
-        return this.game;
+    private void initStates() {
+        this.states.add(new CreateCharacter(this, this.game));
+        this.states.add(new CreateLevel(this, this.game));
+        this.states.add(new CreateRoom(this, this.game));
+        this.states.add(new RunaIntent(this, this.game));
+        this.states.add(new SelectTarget(this, this.game));
+        this.states.add(new RunaAction(this, this.game));
+        this.states.add(new RunaRoll(this, this.game));
+        this.states.add(new RunaEvaluator(this, this.game));
+        this.states.add(new MonsterEvaluator(this, this.game));
+        this.states.add(new Outcome(this, this.game));
+        this.states.add(new NewAbilities(this, this.game));
+        this.states.add(new Healing(this, this.game));
     }
 
     public void start() {
         this.running = true;
-        this.success = true;
+        this.validInput = true;
+
         while (this.running) {
-            if (this.success) {
-                this.gameStates.get(currState).message();
-                this.success = false;
+            if (this.validInput) {
+                this.states.get(this.actualState).message();
+                this.validInput = false;
             }
 
-            if (this.gameStates.get(currState).maxArgumentsNumber() != 0) {
+            this.states.get(this.actualState).inputMessage();
+
+            if (this.states.get(this.actualState).maxArgumentsNumber() != 0) {
                 String input = this.scanner.nextLine();
                 if (input.equals(QUIT)) {
                     stop();
                     return;
                 }
+
                 input(input);
             } else {
-                this.success = true;
-                this.gameStates.get(this.currState).execute(List.of());
+                this.validInput = true;
+                this.states.get(this.actualState).execute(List.of());
             }
         }
     }
@@ -74,23 +87,21 @@ public class Session {
         try {
             List<Integer> converted = split.stream().map(each -> Integer.parseInt(each)).collect(Collectors.toList());
 
-            if (converted.size() < this.gameStates.get(currState).minArgumentsNumber()) {
-                return;
-            }
-
-            if (converted.size() > this.gameStates.get(currState).maxArgumentsNumber()) {
+            if (converted.size() < this.states.get(this.actualState).minArgumentsNumber()
+                    || converted.size() > this.states.get(this.actualState).maxArgumentsNumber()) {
                 return;
             }
 
             Optional<Integer> empty = Optional.empty();
-            if (converted.stream().filter(each -> each > this.gameStates.get(this.currState).limit())
+            if (converted.stream().filter(each -> each.intValue() > this.states.get(this.actualState).limit())
                     .findAny() != empty) {
                 return;
             }
 
-            this.success = true;
-            this.gameStates.get(this.currState).execute(converted);
+            this.validInput = true;
+            this.states.get(this.actualState).execute(converted);
         } catch (NumberFormatException e) {
+            // TODO: handle exception
             return;
         }
     }
@@ -98,4 +109,5 @@ public class Session {
     public void stop() {
         this.running = false;
     }
+
 }

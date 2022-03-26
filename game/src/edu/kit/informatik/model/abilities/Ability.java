@@ -1,33 +1,36 @@
 package edu.kit.informatik.model.abilities;
 
+import java.util.Optional;
+
 import edu.kit.informatik.model.characters.Character;
 
 public abstract class Ability {
+    
     private static final String REGEX = "%s(%d)";
 
-    private final int level;
+    protected final int level;
 
     protected String name;
-    protected Action action;
-    protected Type type;
+    protected AbilityAction action;
+    protected AbilityType type;
+
+    protected boolean breakFocus;
 
     public Ability(int level) {
         this.level = level;
+
+        this.breakFocus = false;
     }
 
-    public int getLevel() {
-        return this.level;
-    }
-
-    public Action getAction() {
+    public AbilityAction getAction() {
         return this.action;
     }
 
-    public Type getType() {
+    public AbilityType getType() {
         return this.type;
     }
 
-    public abstract void execute(Character attacker, Character defender);
+    public abstract void execute(Optional<Character> character);
 
     @Override
     public String toString() {
@@ -40,12 +43,11 @@ public abstract class Ability {
             return true;
         }
 
-        Ability a = (Ability) o;
-        if (this.name.equals(a.name)) {
+        Ability ability = (Ability) o;
+        if (this.name.equals(ability.name)) {
             return true;
         }
 
         return false;
     }
-    
 }

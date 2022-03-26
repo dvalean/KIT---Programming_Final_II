@@ -1,55 +1,73 @@
 package edu.kit.informatik.model.characters;
 
+import java.util.List;
+
+import edu.kit.informatik.model.abilities.Ability;
+
 public abstract class Character {
+    private final String name;
+    
+    protected int hp;
+    protected int fp;
 
-    private int hp;
-    private int fp;
-    private int dmgDealt = 0;
-    private int dmgBlocked = 0;
-    private int roll = 0;
+    protected Ability intent;
+    private int actionValue;
+    private int predictedFP;
 
-    public Character() {
-
-    }
-
-    public void setHp(int hp) {
+    public Character(int hp, int fp, String name) {
         this.hp = hp;
+        this.fp = fp;
+        this.name = name;
+
+        this.actionValue = 0;
+        this.predictedFP = 0;
     }
 
     public int getHp() {
         return this.hp;
     }
 
-    public void setFp(int fp) {
-        this.fp = fp;
-    }
-
     public int getFp() {
         return this.fp;
     }
 
-    public void loseHp(int dmg) {
-        this.hp -= dmg;
+    public String getName() {
+        return this.name;
     }
 
-    public void setDmgDealt(int dmgDealt) {
-        this.dmgDealt = dmgDealt;
+    public void loseFp(int cost) {
+        this.fp -= cost;
     }
 
-    public int getDmgDealt() {
-        return this.dmgDealt;
+    public void addFp(int focus) {
+        this.fp += focus;
     }
 
-    public void setDmgBlocked(int dmgBlocked) {
-        this.dmgBlocked = dmgBlocked;
+    public void loseHp(int damage) {
+        this.hp -= damage;
     }
 
-    public int getDmgBlocked() {
-        return dmgBlocked;
+    public void action(int actionValue) {
+        this.actionValue = actionValue;
     }
 
-    public int getRoll() {
-        return this.roll;
+    public int getActionValue() {
+        return this.actionValue;
     }
-    
+
+    public void focus(int buff) {
+        this.predictedFP = buff;
+    }
+
+    public int getPredictedFP() {
+        return this.predictedFP;
+    }
+
+    public Ability getIntent() {
+        return this.intent;
+    }
+
+    public abstract List<Ability> abilities();
+
+    public abstract boolean isType(Object o);
 }
