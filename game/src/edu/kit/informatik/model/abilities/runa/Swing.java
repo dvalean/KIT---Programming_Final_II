@@ -20,6 +20,7 @@ public class Swing extends Ability {
         super.name = name;
         super.action = AbilityAction.ATTACK;
         super.type = AbilityType.PHYSICAL;
+        super.breakFocus = true;
     }
 
     @Override

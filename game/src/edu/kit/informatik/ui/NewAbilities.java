@@ -23,11 +23,17 @@ public class NewAbilities implements GameStates {
 
     @Override
     public int maxArgumentsNumber() {
+        if (this.game.getNrEnemies() == 1) {
+            return 1;
+        }
         return ARGUMENTS_NUMBER;
     }
 
     @Override
     public int minArgumentsNumber() {
+        if (this.game.getNrEnemies() == 1) {
+            return 1;
+        }
         return ARGUMENTS_NUMBER;
     }
 
@@ -39,8 +45,13 @@ public class NewAbilities implements GameStates {
     @Override
     public void message() {
         this.choice = new ArrayList<>();
-        this.choice.addAll(this.game.getAbilities().subList(0, 4));
-        System.out.println(Messages.PICK_CARDS.toString());
+        int range = 2 * this.game.getNrEnemies();
+        if (this.game.getAbilities().size() < 4) {
+            range = 3;
+        }
+
+        this.choice.addAll(this.game.getAbilities().subList(0, range));
+        System.out.println(String.format(Messages.PICK_CARDS.toString(), this.game.getNrEnemies()));
         int counter = 1;
         for (Ability ability : choice) {
             System.out.println(String.format(Messages.ENUMERATION.toString(), counter++, ability.toString()));
@@ -49,12 +60,27 @@ public class NewAbilities implements GameStates {
 
     @Override
     public void inputMessage() {
-        System.out.println(String.format(Messages.ENTER_NUMBER.toString(), choice.size()));
+        if (this.game.getNrEnemies() == 1) {
+            System.out.println(String.format(Messages.ENTER_NUMBER.toString(), choice.size()));
+            return;
+        }
+
+        System.out.println(String.format(Messages.ENTER_NUMBERS.toString(), choice.size()));
     }
 
     @Override
     public void execute(List<Integer> arguments) {
-        this.game.addCards(List.of(this.choice.get(arguments.get(0) - 1), this.choice.get(arguments.get(1) - 1)));
+        List<Ability> temp = new ArrayList<>();
+
+        for (Integer value : arguments) {
+            for (Ability ability : this.choice) {
+                if (this.choice.indexOf(ability) == value - 1) {
+                    temp.add(ability);
+                }
+            }
+        }
+
+        this.game.addCards(temp, this.choice);
 
         for (Integer integer : arguments) {
             Ability ability = this.choice.get(integer - 1);
@@ -62,7 +88,8 @@ public class NewAbilities implements GameStates {
         }
 
         if (this.game.getRoom() > 4) {
-            if (this.game.getRuna().getHp() < this.game.getRuna().getMaxHp()) {
+            if (this.game.getRuna().getHp() < this.game.getRuna().getMaxHp()
+                    && this.game.getRuna().abilities().size() > 1) {
                 this.session.setActualState(this.session.getActualState() + 1);
             } else {
                 this.session.setActualState(1);
@@ -71,7 +98,8 @@ public class NewAbilities implements GameStates {
             return;
         }
 
-        if (this.game.getRuna().getHp() < this.game.getRuna().getMaxHp()) {
+        if (this.game.getRuna().getHp() < this.game.getRuna().getMaxHp()
+                && this.game.getRuna().abilities().size() > 1) {
             this.session.setActualState(this.session.getActualState() + 1);
         } else {
             this.session.setActualState(2);

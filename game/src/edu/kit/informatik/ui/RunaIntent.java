@@ -41,6 +41,8 @@ public class RunaIntent implements GameStates {
         List<Monster> currentEnemies = this.game.getCurrentEnemies();
         Runa runa = this.game.getRuna();
 
+        this.game.focus(runa);
+
         System.out.println(Messages.BREAK_LINES.toString());
         System.out.println(
                 String.format(Messages.RUNA.toString(), runa.getHp(), runa.getMaxHp(), runa.getFp(), runa.getDice()));

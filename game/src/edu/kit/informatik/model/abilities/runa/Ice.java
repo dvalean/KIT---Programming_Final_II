@@ -25,7 +25,7 @@ public class Ice extends Ability {
 
     @Override
     public void execute(Optional<Character> target) {
-        int damage = (2 * super.level + 4) * this.runa.getFp();
+        int damage = (2 * super.level + 4) * this.runa.getFp() + 2;
         damage += target.get().isType(MonsterTypes.WATER) ? 2 * super.level : 0;
 
         this.runa.action(damage);

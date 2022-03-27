@@ -53,10 +53,10 @@ public class RunaEvaluator implements GameStates {
 
         if (this.game.getTarget().getHp() < 1) {
             System.out.println(String.format(Messages.CHARACTER_DIES.toString(), this.game.getTarget().getName()));
-            this.game.deleteTarget();
+            this.game.deleteTarget(this.game.getTarget());
         }
 
-        if (this.game.getCurrentEnemies().isEmpty() && this.game.getRoom() > 4 && this.game.getLevel() > 2) {
+        if (this.game.getCurrentEnemies().isEmpty() && this.game.getRoom() > 4 && this.game.getLevel() >= 2) {
             System.out.println(Messages.WIN.toString());
             this.session.stop();
             return;

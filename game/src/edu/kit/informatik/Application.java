@@ -9,8 +9,15 @@ public final class Application {
     }
 
     public static void main(String[] args) {
+
+        if (args.length != 0) {
+            // TODO: exception
+            System.out.println("Error, wrong");
+            return;
+        }
+
         Session session = new Session();
         session.start();
     }
-    
+
 }

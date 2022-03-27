@@ -13,6 +13,9 @@ public class Monster extends Character {
     private final List<MonsterTypes> type;
     private final List<Ability> abilities;
 
+    private Ability move = null;
+    private int abilitiIndex = 0;
+
     public Monster(int level, List<MonsterTypes> type, int hp, List<Ability> abilities, String name) {
         super(hp, INITIAL_FP, name);
 
@@ -20,7 +23,7 @@ public class Monster extends Character {
         this.type = type;
         this.abilities = abilities;
 
-        super.intent = this.abilities.get(0);
+        super.intent = this.abilities.get(abilitiIndex);
     }
 
     public int getLevel() {
@@ -31,12 +34,19 @@ public class Monster extends Character {
         return this.abilities;
     }
 
+    public Ability getMove() {
+        return this.move;
+    }
+
     public void nextIntent() {
-        if (this.abilities.indexOf(super.intent) < this.abilities.size() - 1) {        
-            super.intent = this.abilities.get(this.abilities.indexOf(super.intent) + 1);            
+        this.move = super.intent;
+
+        if (abilitiIndex < this.abilities.size() - 1) {
+            abilitiIndex++;
         } else {
-            super.intent = this.abilities.get(0);
+            abilitiIndex = 0;
         }
+        super.intent = this.abilities.get(abilitiIndex);
     }
 
     @Override
@@ -47,5 +57,5 @@ public class Monster extends Character {
     @Override
     public boolean isType(Object o) {
         return this.type.contains(o) ? true : false;
-    }    
+    }
 }

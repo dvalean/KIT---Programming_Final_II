@@ -30,6 +30,14 @@ public abstract class Ability {
         return this.type;
     }
 
+    public boolean breakFocus() {
+        return this.breakFocus;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
     public abstract void execute(Optional<Character> character);
 
     @Override
@@ -44,7 +52,7 @@ public abstract class Ability {
         }
 
         Ability ability = (Ability) o;
-        if (this.name.equals(ability.name)) {
+        if (this.name.equals(ability.name) && this.level == ability.level) {
             return true;
         }
 

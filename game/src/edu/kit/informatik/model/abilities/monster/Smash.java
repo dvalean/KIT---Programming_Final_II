@@ -9,7 +9,7 @@ import edu.kit.informatik.model.characters.Character;
 
 public class Smash extends Ability {
 
-    private static final String name = "Claw";
+    private static final String name = "Smash";
 
     public Smash(int level) {
         super(level);

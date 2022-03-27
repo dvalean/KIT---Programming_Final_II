@@ -24,9 +24,10 @@ public class Focus extends Ability {
 
     @Override
     public void execute(Optional<Character> target) {
-        int buff = super.level;
-        
+        int buff = this.runa.getFp() + super.level > this.runa.getDice() ? this.runa.getDice() - this.runa.getFp()
+                : super.level;
+
         this.runa.focus(buff);
     }
-    
+
 }

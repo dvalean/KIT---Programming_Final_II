@@ -49,6 +49,10 @@ public abstract class Character {
 
     public void action(int actionValue) {
         this.actionValue = actionValue;
+
+        if (actionValue < 0) {
+            this.actionValue = 0;
+        }
     }
 
     public int getActionValue() {

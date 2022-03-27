@@ -9,7 +9,6 @@ import edu.kit.informatik.util.Messages;
 
 public class Healing implements GameStates {
 
-    private static final int MAX_ARGUMENTS_NUMBER = 2;
     private static final int MIN_ARGUMENTS_NUMBER = 0;
 
     private final Session session;
@@ -22,7 +21,7 @@ public class Healing implements GameStates {
 
     @Override
     public int maxArgumentsNumber() {
-        return MAX_ARGUMENTS_NUMBER;
+        return this.game.getRuna().abilities().size() - 1;
     }
 
     @Override
@@ -47,19 +46,29 @@ public class Healing implements GameStates {
 
     @Override
     public void inputMessage() {
+        if (this.game.getRuna().abilities().size() < 3) {
+            System.out.println(String.format(Messages.ENTER_NUMBER.toString(), this.game.getRuna().abilities().size()));
+            return;
+        }
+
         System.out.println(String.format(Messages.ENTER_NUMBERS.toString(), this.game.getRuna().abilities().size()));
     }
 
     @Override
     public void execute(List<Integer> arguments) {
-        this.game.getRuna().heal(10 * arguments.size());
-        System.out.println(String.format(Messages.HEAL.toString(), 10 * arguments.size()));
-        List<Ability> remove = new ArrayList<>();
-        for (Integer index : arguments) {
-            remove.add(this.game.getRuna().abilities().get(index - 1));
-        }
+        if (!arguments.isEmpty()) {
+            int heal = this.game.getRuna().getHp() + 10 * arguments.size() > this.game.getRuna().getMaxHp()
+                    ? this.game.getRuna().getMaxHp() - this.game.getRuna().getHp()
+                    : 10 * arguments.size();
+            this.game.getRuna().heal(heal);
+            System.out.println(String.format(Messages.HEAL.toString(), heal));
+            List<Ability> remove = new ArrayList<>();
+            for (Integer index : arguments) {
+                remove.add(this.game.getRuna().abilities().get(index - 1));
+            }
 
-        this.game.getRuna().removeAbility(remove);
+            this.game.getRuna().removeAbility(remove);
+        }
 
         if (this.game.getRoom() > 4) {
             this.session.setActualState(1);

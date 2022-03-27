@@ -59,7 +59,7 @@ public class Runa extends Character {
 
     public List<Ability> classPowers(int level) {
         switch (this.type) {
-            case WORRIOR:
+            case WARRIOR:
                 return List.of(new Thrust(level, this), new Parry(level, this));
 
             case MAGE:
@@ -75,8 +75,9 @@ public class Runa extends Character {
     }
 
     public void upgradeAbility() {
-        List<Ability> temp = classPowers(2);
-        this.abilities.removeAll(temp);
+        List<Ability> temp = new ArrayList<>();
+        temp.addAll(classPowers(2));
+
         this.abilities.addAll(temp);
     }
 

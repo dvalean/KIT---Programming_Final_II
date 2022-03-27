@@ -30,7 +30,7 @@ public enum MonsterVariations {
             List.of(new Bite(2), new Block(2), new Focus(2), new Fire(1), new Lightning(1))),
     SNAKE(2, List.of(MonsterTypes.ICE), 31, List.of(new Bite(2), new Focus(2), new Ice(2))),
     DARK_ELF(2, List.of(), 34, List.of(new Focus(2), new Water(1), new Lightning(1))),
-    SHADOWN_BLADE(2, List.of(MonsterTypes.BLITZ), 27, List.of(new Scratch(2), new Focus(2), new Lightning(2))),
+    SHADOW_BLADE(2, List.of(MonsterTypes.BLITZ), 27, List.of(new Scratch(2), new Focus(2), new Lightning(2))),
     HORNET(2, List.of(MonsterTypes.FIRE), 32, List.of(new Scratch(2), new Focus(2), new Fire(1), new Fire(2))),
     TARANTULA(2, List.of(), 33, List.of(new Bite(2), new Block(2), new Scratch(2))),
     BEAR(2, List.of(), 40, List.of(new Claw(2), new Deflect(2), new Block(2))),

@@ -41,17 +41,19 @@ public class Game {
     private List<Ability> abilities;
 
     private Monster target;
+    private int reflect = 0;
+    private int nrEnemies;
 
     public Game() {
         this.level = 1;
-        this.room = 1;
-
-        this.enemies = new ArrayList<>();
-        this.abilities = new ArrayList<>();
     }
 
     public int getLevel() {
         return this.level;
+    }
+
+    public void nextLevel() {
+        this.level++;
     }
 
     public int getRoom() {
@@ -74,11 +76,12 @@ public class Game {
         return this.abilities;
     }
 
+    public int getNrEnemies() {
+        return nrEnemies;
+    }
+
     public void initGame(int typeID) {
         this.runa = new Runa(ClassType.typeById(typeID));
-
-        createAbilities(level);
-        createEnemies(level);
     }
 
     private void createAbilities(int level) {
@@ -106,6 +109,13 @@ public class Game {
     }
 
     public void initLevel(int abilitySeed, int monsterSeed) {
+        this.enemies = new ArrayList<>();
+        this.abilities = new ArrayList<>();
+
+        createAbilities(level);
+        createEnemies(level);
+
+        this.room = 1;
         Random random;
 
         random = new Random(abilitySeed);
@@ -120,9 +130,9 @@ public class Game {
 
         if (this.room == 4) {
             if (this.level == 1) {
-                this.currentEnemies = List.of(MonsterVariations.SPIDER_KING.getMonster());
+                this.currentEnemies.add(MonsterVariations.SPIDER_KING.getMonster());
             } else {
-                this.currentEnemies = List.of(MonsterVariations.MEGA_SAURUS.getMonster());
+                this.currentEnemies.add(MonsterVariations.MEGA_SAURUS.getMonster());
             }
         } else if (this.room == 1) {
             this.currentEnemies.add(enemies.get(0));
@@ -135,6 +145,7 @@ public class Game {
         }
 
         this.target = this.currentEnemies.get(0);
+        this.nrEnemies = this.currentEnemies.size();
 
         this.room++;
     }
@@ -144,14 +155,19 @@ public class Game {
     }
 
     public int runaEvaluator() {
-
-        focus(this.runa);
+        this.runa.action(0);
         int damage = 0;
         this.runa.getIntent().execute(Optional.of((Character) target));
 
         if (this.runa.getIntent().getAction() == AbilityAction.ATTACK) {
+            if (this.runa.getIntent().breakFocus()) {
+                this.target.focus(0);
+            }
+
             damage = this.runa.getActionValue();
-            if (this.runa.getIntent().getType().equals(this.target.getIntent().getType())) {
+            if (this.target.getMove() != null
+                    && this.runa.getIntent().getType().equals(this.target.getMove().getType())
+                    && this.target.getMove().getAction() == AbilityAction.DEFEND) {
                 damage -= this.target.getActionValue();
             }
 
@@ -165,14 +181,14 @@ public class Game {
         return damage;
     }
 
-    public void deleteTarget() {
-        this.currentEnemies.remove(this.target);
+    public void deleteTarget(Monster monster) {
+        this.currentEnemies.remove(monster);
     }
 
     public int monsterEvaluator(Monster monster) {
         int damage = 0;
         if (monster.getIntent().getAction() == AbilityAction.ATTACK
-                && monster.getIntent().getType() == AbilityType.MAGICAL && monster.getFp() < this.level + 1) {
+                && monster.getIntent().getType() == AbilityType.MAGICAL && monster.getFp() < monster.getIntent().getLevel()) {
             monster.nextIntent();
             return monsterEvaluator(monster);
         }
@@ -180,6 +196,10 @@ public class Game {
         monster.getIntent().execute(Optional.of((Character) monster));
 
         if (monster.getIntent().getAction() == AbilityAction.ATTACK) {
+            if (monster.getIntent().breakFocus()) {
+                this.runa.focus(0);
+            }
+
             damage = monster.getActionValue();
 
             if (monster.getIntent().getType().equals(this.runa.getIntent().getType())) {
@@ -187,7 +207,6 @@ public class Game {
                     reflect(monster, damage);
                 }
                 damage -= this.runa.getActionValue();
-                this.runa.action(0);
             }
 
             if (damage > 0) {
@@ -197,17 +216,27 @@ public class Game {
             monster.action(0);
         }
 
-        monster.nextIntent();
-
         return damage;
     }
 
     public void reflect(Monster monster, int damage) {
+        int reflect;
         if (damage > this.runa.getActionValue()) {
-            monster.loseHp(this.runa.getActionValue());
+            reflect = this.runa.getActionValue();
         } else {
-            monster.loseHp(damage);
+            reflect = damage;
         }
+
+        monster.loseHp(reflect);
+        this.reflect = reflect;
+    }
+
+    public int getReflect() {
+        return reflect;
+    }
+
+    public void resetReflect() {
+        this.reflect = 0;
     }
 
     public void focus(Character character) {
@@ -219,8 +248,8 @@ public class Game {
         }
     }
 
-    public void addCards(List<Ability> newAbilities) {
+    public void addCards(List<Ability> newAbilities, List<Ability> deck) {
         this.runa.addAbility(newAbilities);
-        this.abilities.removeAll(newAbilities);
+        this.abilities.removeAll(deck);
     }
 }

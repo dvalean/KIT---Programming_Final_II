@@ -1,9 +1,11 @@
 package edu.kit.informatik.ui;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import edu.kit.informatik.model.Game;
@@ -82,7 +84,17 @@ public class Session {
     }
 
     private void input(String input) {
+        if (input.length() > 0 && (input.charAt(input.length() - 1) == SEPARATOR.charAt(0)
+                || input.charAt(0) == SEPARATOR.charAt(0))) {
+            return;
+        }
+
         List<String> split = List.of(input.split(SEPARATOR));
+        if (split.get(0).equals("") && this.states.get(this.actualState).minArgumentsNumber() == 0) {
+            this.validInput = true;
+            this.states.get(this.actualState).execute(List.of());
+            return;
+        }
 
         try {
             List<Integer> converted = split.stream().map(each -> Integer.parseInt(each)).collect(Collectors.toList());
@@ -92,8 +104,18 @@ public class Session {
                 return;
             }
 
+            Set<Integer> set = new HashSet<>(converted);
+            if (set.size() < converted.size() && this.actualState != 1) {
+                return;
+            }
+
             Optional<Integer> empty = Optional.empty();
             if (converted.stream().filter(each -> each.intValue() > this.states.get(this.actualState).limit())
+                    .findAny() != empty) {
+                return;
+            }
+
+            if (converted.stream().filter(each -> each.intValue() < 1)
                     .findAny() != empty) {
                 return;
             }
